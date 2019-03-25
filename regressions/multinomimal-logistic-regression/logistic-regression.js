@@ -67,10 +67,11 @@ class LogisticRegression {
     standardize(features) {
         const { mean, variance } = tf.moments(features, 0);
 
+        const filler = variance.cast('bool').logicalNot().cast('float32');
         this.mean = mean;
-        this.variance = variance;
+        this.variance = variance.add(filler);
 
-        return features.sub(mean).div(variance.pow(0.5));
+        return features.sub(mean).div(this.variance.pow(0.5));
     }
 
     recordCost() {
